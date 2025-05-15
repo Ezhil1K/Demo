@@ -1,0 +1,202 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ezhilarasan Kandiah's portfolio showcasing expertise in technical cleanliness and automotive standards">
+    <title>Ezhilarasan Kandiah's Portfolio</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 text-white py-4 fixed w-full top-0 z-10">
+        <div class="container mx-auto px-4 flex justify-center">
+            <ul class="flex space-x-6">
+                <li><a href="#home" class="hover:text-gray-300">Home</a></li>
+                <li><a href="#about" class="hover:text-gray-300">About</a></li>
+                <li><a href="#projects" class="hover:text-gray-300">Projects</a></li>
+                <li><a href="#skills" class="hover:text-gray-300">Skills</a></li>
+                <li><a href="#certificates" class="hover:text-gray-300">Certificates</a></li>
+                <li><a href="#contact" class="hover:text-gray-300">Contact Me</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="bg-blue-600 text-white text-center py-20">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold mb-4">Welcome to Ezhilarasan Kandiah's Portfolio</h1>
+            <p class="text-xl">I’m a passionate Technical Specialist ensuring excellence in automotive cleanliness.</p>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">About Ezhilarasan Kandiah</h2>
+            <h3 class="text-2xl text-center mb-4">Technical Specialist</h3>
+            <div class="flex flex-col md:flex-row items-center">
+                <img src="images/profile.jpg" alt="Ezhilarasan Kandiah" class="w-64 h-64 object-cover rounded-full mb-4 md:mb-0 md:mr-8">
+                <p class="text-lg">
+                    As a dedicated Technical Specialist with 13 years of industrial expertise, I redefine quality through my mastery of technical cleanliness in the automotive sector. Over the past 7 years, I have led cleanliness laboratories, conducted rigorous cleanroom audits, and developed innovative contamination control strategies, ensuring compliance with ISO 14644 and ISO 16232/VDA 19.1 standards.
+                    <br><br>
+                    My expertise in particle characterization, material characterization, metallurgical analysis, and failure analysis enables me to deliver unparalleled material insights. Passionate about training cross-functional teams, I foster collaboration and drive excellence. A proactive innovator, I am committed to maintaining the highest standards of cleanliness.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="bg-gray-200 py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="images/project1.jpg" alt="Cleanroom Audit System" class="w-full h-48 object-cover mb-4">
+                    <h3 class="text-xl font-semibold">Cleanroom Audit System</h3>
+                    <p>Developed a system to automate cleanroom audits per ISO 14644 standards, improving efficiency by 30%.</p>
+                    <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">View Details</a>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="images/project2.jpg" alt="Contamination Control Tool" class="w-full h-48 object-cover mb-4">
+                    <h3 class="text-xl font-semibold">Contamination Control Tool</h3>
+                    <p>Designed a tool for particle characterization in automotive parts, reducing defects by 25%.</p>
+                    <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">View Details</a>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <img src="images/project3.jpg" alt="Failure Analysis Dashboard" class="w-full h-48 object-cover mb-4">
+                    <h3 class="text-xl font-semibold">Failure Analysis Dashboard</h3>
+                    <p>Built a dashboard for metallurgical failure analysis, enhancing data visualization for engineers.</p>
+                    <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">View Details</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Skills</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <img src="icons/skill1.png" alt="Particle Characterization" class="w-16 h-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Particle Characterization</h3>
+                    <p>Expertise in analyzing particle contamination per ISO 16232 standards.</p>
+                    <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">Learn More</a>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <img src="icons/skill2.png" alt="Material Characterization" class="w-16 h-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Material Characterization</h3>
+                    <p>Skilled in advanced material analysis techniques for automotive components.</p>
+                    <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">Learn More</a>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <img src="icons/skill3.png" alt="Metallurgical Analysis" class="w-16 h-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Metallurgical Analysis</h3>
+                    <p>Proficient in metallurgical failure analysis for quality assurance.</p>
+                    <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">Learn More</a>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <img src="icons/skill4.png" alt="Cleanroom Auditing" class="w-16 h-16 mx-auto mb-4">
+                    <h3 class="text-xl font-semibold">Cleanroom Auditing</h3>
+                    <p>Led ISO 14644-compliant cleanroom audits for automotive facilities.</p>
+                    <a href="#" class="text-blue-600 hover:underline mt-2 inline-block">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificates Section -->
+    <section id="certificates" class="bg-gray-200 py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">My Certificates</h2>
+            <ul class="list-disc pl-6">
+                <li><a href="certificates/iso14644.pdf" class="text-blue-600 hover:underline">Certified ISO 14644 Auditor - International Organization for Standardization</a></li>
+                <li><a href="certificates/vda19.pdf" class="text-blue-600 hover:underline">VDA 19.1 Cleanliness Specialist - German Association of the Automotive Industry</a></li>
+                <li><a href="certificates/metallurgy.pdf" class="text-blue-600 hover:underline">Advanced Metallurgical Analysis - ASM International</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Contact Me</h2>
+            <div class="flex flex-col md:flex-row gap-8">
+                <form action="https://formspree.io/f/your-id" method="POST" class="md:w-1/2">
+                    <div class="mb-4">
+                        <label for="name" class="block text-lg mb-2">Name</label>
+                        <input type="text" id="name" name="name" class="w-full p-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-lg mb-2">Email</label>
+                        <input type="email" id="email" name="email" class="w-full p-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="block text-lg mb-2">Message</label>
+                        <textarea id="message" name="message" class="w-full p-2 border rounded" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Submit</button>
+                </form>
+                <div class="md:w-1/2">
+                    <p class="text-lg mb-4"><strong>Email:</strong> ezhilarasan@example.com</p>
+                    <p class="text-lg mb-4"><strong>Phone:</strong> +91-123-456-7890</p>
+                    <div class="social-links flex space-x-4">
+                        <a href="https://linkedin.com/in/ezhilarasan-kandiah" class="text-2xl text-blue-600 hover:text-blue-800"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/Ezhil1K" class="text-2xl text-blue-600 hover:text-blue-800"><i class="fab fa-github"></i></a>
+                        <a href="https://twitter.com/ezhilarasan" class="text-2xl text-blue-600 hover:text-blue-800"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-4">
+        <p>&copy; 2025 Ezhilarasan Kandiah. All rights reserved.</p>
+    </footer>
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>
